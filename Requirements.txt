@@ -1,0 +1,25 @@
+# In terminal: pip install -r Requirements.txt
+# Utilities
+numpy 
+pandas
+
+# Face recognition
+scikit-learn
+dlib-bin
+git+https://github.com/ageitgey/face_recognition_models
+setuptools<70.0
+
+# Ready to use database
+supabase
+
+# password encryption
+bcrypt
+
+# create QR code
+segno
+
+# Image file manipulation
+pillow
+
+# web interface
+streamlit

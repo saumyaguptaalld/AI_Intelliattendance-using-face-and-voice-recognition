@@ -1,0 +1,14 @@
+# create enviornment
+python -m venv venv
+
+# activate venv (virtual enviornment)
+.\venv\Scripts\Activate.ps1
+
+# Create Requirements.txt file 
+@ mention all the dependancies, repositories
+@ dlib-bin library has build wheels and easier to work rather than dlib, limitation to work only on Windows (AMD64)
+when we do pip install library , the c++ code is converted to python library using whl 
+but in dlib the whl is not build , so we use dlib-bin     
+                                                                          # for other windows variation "https://github.com/z-mahmud22/Dlib_Windows_Python3.x"
+# in terminal to install all dependancies
+pip install -r Requirements.txt
