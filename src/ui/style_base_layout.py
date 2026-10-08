@@ -38,14 +38,14 @@ def style_base_layout():
 
             h1{
                font-family: 'Black Ops One','Public Sans', sans-serif !important;
-               font-size: 3.5rem !important;  
+               font-size: 3.0rem !important;  
                line-height: 0.9  !important;
                margin-bottom: 0rem !important;
             
             }
             h2{
                font-family: 'Black Ops One', 'Public Sans', sans-serif !important;
-               font-size: 2.5rem !important;  
+               font-size: 1.8rem !important;  
                line-height: 0.8  !important;
                margin-bottom: 0rem !important;
                         
@@ -76,7 +76,8 @@ def style_base_layout():
             /* Secondary and Tertiary buttons for all other buttons */
             button[kind="secondary"]{
                 border-radius: 1.5rem !important;
-                background: pink !important;
+                background: maroon !important;
+                font-weight: bold !important;
                 color: white !important;
                 outline: none !important;
                 padding: 10px 20px !important;

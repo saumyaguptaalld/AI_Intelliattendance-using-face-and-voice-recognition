@@ -20,6 +20,5 @@ def home_screen():
         if st.button("Teacher Portal", type="primary", width = "stretch", icon=":material/open_in_new:",icon_position = "right"):
             st.session_state['login_type']='teacher'
             st.rerun()
-        
-        
+            
     footer_home()
