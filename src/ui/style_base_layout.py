@@ -45,7 +45,7 @@ def style_base_layout():
             }
             h2{
                font-family: 'Black Ops One', 'Public Sans', sans-serif !important;
-               font-size: 1.8rem !important;  
+               font-size: 1.6rem !important;  
                line-height: 0.8  !important;
                margin-bottom: 0rem !important;
                         

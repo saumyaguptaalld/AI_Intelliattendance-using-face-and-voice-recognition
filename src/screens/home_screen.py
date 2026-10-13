@@ -9,13 +9,13 @@ def home_screen():
     
     col1, col2 = st.columns(2, gap = "large")
     with col1:
-        st.header("Iam a Student")
+        st.header("Iam a Student",width="stretch")
         st.image("student.png",width = 145)
         if st.button("Student Portal", width = "stretch", type="primary", icon=":material/open_in_new:",icon_position = "right"):
             st.session_state['login_type']='student'
             st.rerun()
     with col2:
-        st.header("Iam a Teacher")
+        st.header("Iam a Teacher",width="stretch")
         st.image("teacher.png",width = 145)
         if st.button("Teacher Portal", type="primary", width = "stretch", icon=":material/open_in_new:",icon_position = "right"):
             st.session_state['login_type']='teacher'

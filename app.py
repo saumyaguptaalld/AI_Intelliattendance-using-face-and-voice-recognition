@@ -16,7 +16,7 @@ st.set_page_config(
 def main():
 
     if "login_type" not in st.session_state:
-        st.session_state["login_type"] = None
+        st.session_state["login_type"] = "home_screen"
 
     match st.session_state["login_type"]:
 
@@ -26,7 +26,7 @@ def main():
         case "student":
             student_screen()
 
-        case None:
+        case "home_screen":
             home_screen()
 
 
