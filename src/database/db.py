@@ -17,7 +17,7 @@ def create_teacher(username, password, name):
             "password":hash_pass(password),
             "name": name}
     response = supabase.table("teachers").insert(data).execute()
-    return response
+    return response.data
 
 def teacher_login(username, password):
     response = supabase.table("teachers").select('*').eq("username",username).execute()
@@ -35,3 +35,6 @@ def teacher_login(username, password):
             }
     return None
 
+def get_all_students():
+    response = supabase.table("students").select("*").execute()
+    return response.data

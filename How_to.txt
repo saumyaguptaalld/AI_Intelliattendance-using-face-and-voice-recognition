@@ -37,4 +37,28 @@ we create functions for teacher registration,
                         checking whether a username exists, and
                         teacher login
                         using Supabase as your database and bcrypt for password security. (supabase: configured Supabase client, lets Python communicate with your PostgreSQL database, bcrypt: A library used to securely hash passwords.)
-                        
+check_teacher_exists(), create_teacher(), teacher_login()
+
+# modify teacher_screen.py
+import above functions from db.py for validating and creating credentials
+create login_teacher and register_teacher functions that access the db.py functions for displaying messages and creating and validating credentials
+teacher dashboard
+
+# student screen 
+ faceid ,camera inputs, header, footer and button
+
+ src--> pipelines--> face_recognition.py
+ import dlib, numpy, face_recognition_models(github), support vector classifier from support vector machine, streamlit
+ import from src.database.db  import get_all_students
+
+ in face_recognition.py we take a photo, obtain its embeddings then train the classifier
+ so, after the training , the class group photo obtained --> identify faces --> generate embeddings --> predict student id --> verify face similarity --> record detected student
+ functions are : load_dlib_models, get_face_embeddings, get_trained_model, train_classifier(clears cache when new data is added and trains),
+ predict_attendance
+
+
+# in voice_recognition.py
+Capture student voice: Record a short, clear speech sample.
+Generate voice embedding: Resemblyzer converts speech into a 256-dimensional vector.
+store in Supabase: Save the vector in students.voice_embedding.
+Verify identity during attendance: Compare the new voice embedding against the enrolled student's embedding. 

@@ -23,3 +23,7 @@ pillow
 
 # web interface
 streamlit
+
+#for voice pipeline
+librosa
+resemblyzer

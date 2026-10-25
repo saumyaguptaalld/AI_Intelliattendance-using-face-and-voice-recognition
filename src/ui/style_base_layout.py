@@ -96,5 +96,42 @@ def style_base_layout():
                 border: none !important;
                 transition: transform 0.25s ease-in-out !important;
             }
+            
+            /* Camera checkbox label */
+            div[data-testid="stCheckbox"] label p {
+                font-family: 'Public Sans', sans-serif;
+                font-size: 18px;
+                font-weight: 600;
+                color: #1f2937;
+            }
+
+            /* Camera input label */
+            div[data-testid="stCameraInput"] label {
+                font-family: 'Public Sans', sans-serif;
+                justify-content: center !important;
+                text-align: center !important;
+            }
+            div[data-testid="stCameraInput"] label p {
+                text-align: center !important;
+                width: 100%;
+                font-size: 20px !important;
+                font-weight: 600;
+                color: #1f2937;
+            }
+
+            /* Photo button */
+            div[data-testid="stCameraInput"] button {
+            background-color: darkblue !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 10px !important;
+            font-weight: 600 !important;
+            }
+
+            /* Hover effect */
+            div[data-testid="stCameraInput"] button:hover {
+                background-color: #1557B0 !important;
+                color: white !important;
+            }
           </style>
     """,unsafe_allow_html=True)
