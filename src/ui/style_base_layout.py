@@ -76,7 +76,7 @@ def style_base_layout():
             /* Secondary and Tertiary buttons for all other buttons */
             button[kind="secondary"]{
                 border-radius: 1.5rem !important;
-                background: maroon !important;
+                background-color: maroon !important;
                 font-weight: bold !important;
                 color: white !important;
                 outline: none !important;
@@ -89,7 +89,7 @@ def style_base_layout():
 
             button[kind="tertiary"]{
                 border-radius: 1.5rem !important;
-                background: black !important;
+                background-color: black !important;
                 color: white !important;
                 outline: none !important;
                 padding: 10px 20px !important;

@@ -62,3 +62,94 @@ Capture student voice: Record a short, clear speech sample.
 Generate voice embedding: Resemblyzer converts speech into a 256-dimensional vector.
 store in Supabase: Save the vector in students.voice_embedding.
 Verify identity during attendance: Compare the new voice embedding against the enrolled student's embedding. 
+
+# resemblyzer package: Python package by Resemble AI designed to analyze, extract, and compare voice characteristics from audio
+operates on both CPU and GPU, optimized primarily for english(run fast on hardware like NVIDIA GTX 1080)
+Used in speaker verification, fake speech detection, feature extraction 
+# librosa is for audio processing utilizes dsp intead of DL 
+we make functions such as load_voice_encoder(define VoiceEncoder), get_voice_embedding( take input: audio byte,load encoder--> get audio and sampling rate using librosa , obtain wav, get embedding)
+def identity speaker (useful when students idividually give attendance): input are: new_embedding, candidates_dict, threshold, intialize best_sid and best_score, loop over the student table inf of student id and student embedding , compare the new embedding with stored embeddingusing the cosine similarity, get the score 
+if similarity score > best_score update best_score and best_sid, further after all students are checked , see if scores are greater thn threshold, return best_sid and best_score and if not then return just best_score and none as student id
+# further now we create function for processing bulk audio where a single audio contains voices of all students
+named def process_bulk_audio (load_voice_encoder, obtain audio and sampling rate with librosa, split audio into segments
+initialize identified_speakers, for loop with start and end in segments, check if end-start has sampling rate higher , its a voice and not a whisper
+then use the segment_audio , preprocess it, get embedding , call identify_speaker function to get student id and best_score
+for the sid obtained loop again and check if that speaker is not repeated and then return the identified speaker at the sid indexed position )
+
+# resume the student_screen.py built
+import  predict_attendance, get_face_embeddings, train_classifier and get_voice_embedding functions from respective files
+similarly import get_all_students, create_student
+after picture is clicked , if piture is true , convert to numpy array , 
+create a with st.spinner that executes until all functions inside it are completed
+get the detected_student, all_student_id and num_faces from predict_attendance(img) function
+if num_faces is 0 ,say face not found, if more than one face say more faces detected,
+if detected student , get student id, get_all_student data, then use student = next() to search for student in get_all_student for detected student matching a student id
+if id matches login, user_role assigned student, student_data extracted from student and toast a awelcome message and rerun
+
+if no student detected say face not registered and you might be new student and need to register so
+create show_registration = True
+make sure you do show_registration = false initially, before the picture = st.camera_input
+
+now outside and parallel to if picture create the registration block
+create a container with header ask for new_name, also give options voice enrolment option 
+initialize audio_data as none
+inside try block ask audio_data input as st.audio_input
+now create a button outside saying create account
+if new_name exists, agin create a with st.spinner , get the img--> encoding(get_face_embeddings)-->if face encoding exists save it and initialize voice encoding, if that audio_data exists save the voice_embedding using get_voice_embedding
+now, enside the if encoding call the create_student function that takes in input: new_name, face_embedding and voice_embedding
+if response_data exists , then call the train_classifier function to clear cache and train the svc with new data , the login, user_role = student , save student_data as response_data create toast profile created and timer then rerun
+
+if no encoding then return face not captured
+if no name then enter your name
+
+# resume the teacher dashboard creation
+create a variable inorder to choose: attendance, manage subject or attendance records
+i.e. current_teacher_tab and use like st.session_state.current_teacher_tab = "take_attendance"
+create buttons, initialize session state as per pressed button and rerun
+
+# call functions for each choosen button eg: 
+if st.session_state.current_teacher_tab == "take_attendance":
+   teacher_tab_take_attendance()
+define the functions: teacher_tab_take_attendance, teacher_tab_manage_subjects, teacher_tab_attendance_records
+
+now for teacher_tab_manage_subjects, get the teacher_id from st.session_state.teacher_data["teacher_id"]
+create a button: "create new subject"
+src--> components--> dialogue_create_subject_teacher.py where we create function "create_subject_dialog" that takes input teacher_id and also uses create_subject function from src.database.db
+ask sub_id, name, section and a create subject button, then show message createD successfully
+also from src.database.db get "get_teacher_subjects" function
+this give a list of all subjects, if subject exists, get stats of subject, total student , total classes
+create share button function and call a subject card function with inputs (name ,code ,section, stats,footer_callback = share_btn)
+
+create src.components.subject_card.py
+def a subject_card named function containing html for designing how the subject card will look
+the subject card mentions subject name, subject code, section, stats i.e.,(# of students and # of classes )
+further call the footer_callback() i.e. the share_subject_dialog function 
+
+# creating a src.components.dialogue_create_share_subject_dialog file with function
+create_share_subject_dialog
+this contains a dialog with link, QR code using libraries segno to generate QR code, and st-copy to enable copy of the link
+
+# now we create the student dashboard and connect the subjects that the teachers have created with student enrollment
+create header, logout button
+create header and an enrollment button , the enrollment button calls enroll_dialog() function
+in enroll_dialog function ask student to enter join code, press enroll now buttton, if join code exists , check in the supabase table named "subject_students" if that student_id and stubject combination exists
+if not then call function student_enrollment() to enroll them and print success message , a timer and then rerun
+
+# create the student_enrollment() in src.database.db
+def student_enrollment(student_id, subject_id)
+data = {"student_id":...}
+response = insert data in supabase table and return response.data
+
+further create student_un_enrollment in same file
+export both functions in dialog_create_enroll
+
+# back to student_screen--> in student dashboard post calling the enroll_dialog(), divider, then print list of the enrolled students and their attendance
+create a st.spinner("Loading all enrolled students..")
+call functions get_student_subjects(student_id) and get_student_attendance(student_id)
+that we have defined in db.py (import them from db.py)
+Fetch student data and create a status map with total classes and attendance in that particular class
+show subject card when enrollment is successful , also create a unenroll button that calls the usenroll dialog that asks if you really want to un-enroll, if yes call the student_un_enrollment() from db and rerun , if no then simply rerun
+
+
+# Now using the share button the url we get i.e. "http://localhost:8501//?join-code=ML101"
+we need to connect this , such that anyone clicking on url --> lands on student login page and as soon as credentials are correct, the page pops up a dialog showing the exact class for enrollment, just click yes and get enrolled

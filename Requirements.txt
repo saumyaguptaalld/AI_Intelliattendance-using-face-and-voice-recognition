@@ -2,6 +2,7 @@
 # Utilities
 numpy 
 pandas
+torch
 
 # Face recognition
 scikit-learn
@@ -23,7 +24,7 @@ pillow
 
 # web interface
 streamlit
-
+st-copy
 #for voice pipeline
 librosa
 resemblyzer
