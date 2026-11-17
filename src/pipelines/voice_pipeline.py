@@ -32,13 +32,16 @@ def identity_speaker(new_embedding, candidates_dict, threshold = 0.65):
         return None, 0.0  # default similarity score of 0 and None means no speaker was identified
     best_sid = None
     best_score = -1.0
-
+    if stored_embedding is not None and len(stored_embedding) > 0:  # embedding exists
+        return None, 0.0
     for sid, stored_embedding in candidates_dict.items():  # student id and student embedding obtained from candidates dict
-        if stored_embedding:  # embedding exists
-            similarity = np.dot(new_embedding, stored_embedding)  # get similarity score with new embedding and stored embedding using the dot product
-            if similarity > best_score:
-                best_score = similarity
-                best_sid = sid
+        if stored_embedding is None or len(stored_embedding) == 0:
+            continue
+        stored_embedding = np.asarray(stored_embedding, dtype=np.float32)
+        similarity = np.dot(new_embedding, stored_embedding)  # get similarity score with new embedding and stored embedding using the dot product
+        if similarity > best_score:
+            best_score = similarity
+            best_sid = sid
     # After all candidates have been checked, decide whether the best match meets the threshold
     if best_score >= threshold:
         return best_sid, best_score
@@ -48,21 +51,24 @@ def identity_speaker(new_embedding, candidates_dict, threshold = 0.65):
 def process_bulk_audio(audio_bytes, candidates_dict, threshold = 0.65):
     try:
         encoder = load_voice_encoder()
+        if not candidates_dict:
+            st.warning("No enrolled students with voice embeddings found.")
+            return {}
         audio, sr = librosa.load(io.BytesIO(audio_bytes),sr=16000)
         segments = librosa.effects.split(audio, top_db= 30)
         identified_speakers = {}
         for start,end in segments:
-            if (end-start) < sr*0.5:  # sample rate should be good , and not whisper voices
+            if (end-start) > sr*0.5:  # sample rate should be good , and not whisper voices
                 # obtain the segment audio
                 segment_audio = audio[start:end]
                 wav = preprocess_wav(segment_audio)
                 embedding = encoder.embed_utterance(wav)
 
                 sid, score = identity_speaker(embedding, candidates_dict, threshold)
-                if sid:
-                    if sid not in identity_speaker or score > identified_speakers[sid]:
-                        identified_speakers[sid]= score
-            return identified_speakers
+                if sid is not None:
+                    if (sid not in identified_speakers or score > identified_speakers[sid]):
+                        identified_speakers[sid]= float(score)
+        return identified_speakers
     except Exception as e:
         st.error(f"Bulk process error:{e}")
         return {}

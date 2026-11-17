@@ -153,3 +153,70 @@ show subject card when enrollment is successful , also create a unenroll button 
 
 # Now using the share button the url we get i.e. "http://localhost:8501//?join-code=ML101"
 we need to connect this , such that anyone clicking on url --> lands on student login page and as soon as credentials are correct, the page pops up a dialog showing the exact class for enrollment, just click yes and get enrolled
+in the app.py file acess the join code using st.query_params, then chaeck the st.session_state if it is a student or not, if not assign it to student and rerun, further check using session_state.get('is_logged_in') is true and user_role is student 
+then call the quick_auto_enroll_dialog(join_code) function from src.components.dialogue_quick_auto_enroll 
+ 
+def the function quick_auto_enroll_dialog(subject_code) where subject_code == join_code that we obtained from the url
+create a dialog, then obtain student_id from session_state
+obtain subject information using supabase.table like subject_code, subject_name, subject_id
+if not found then st.query_params.clear() and st.rerun
+if exists then check in subject_students table if that combination of student_id and subject_id already exists or not
+if yes then say already enrolled and again st.query_params.clear() and st.rerun
+if not then ask would you like to enroll in the subject_code? where subject_code is the join_code through the link you came
+if yes , call the student_enrollment function , print sucessfully enrolled on clicking yes and clear and rerun
+if no then clear and rerun
+
+the student_enrollment function is imported from the src.database.db, where the student enrollment takes in input arguments (student_id, subject_id ) and saves in the subject_students table in supabase
+
+# Now we create the take attendance part of the teacher portal
+def teacher_tab_take_attendance
+create a new variable for session_state: "attendance_images"=[] empty list that saves all attendance_images
+obtain teacher id from session_state
+and get subjects from get_teacher_subjects(teacher_id)
+check if subjects are present for that particular teacher and then create a dropdown select menu of subjects acessing all subjects by creating a list 
+options=[f"{row['name']-{row['subject_id']}" for row in subjects if subjects else []]
+create a upload and capture button next to it , that takes in images for attendance of the selected subject for the particular teacher
+for capture and uplood create a dialog , separate function named dialogue_upload_camera_teacher.py 
+containing def upload_camera () function
+we seperately define one more variable for session state 
+st.session_state.photo_tab as 'upload ' and 'camera' 
+create a dialog asking would you like to capture or upload class photograph
+create the button which when selected become secondary and are generally primary, assign session_state as 'upload' or camera as per clicked button 
+use the st.file_uploader and st.camera_input
+also we append the images in the attendance_images, using st.session_state.attendance_images.append(Image.open(camera_photo))
+Image is imported from the PIL library
+also accept_multiple_files= True for file_uploader
+
+# Now we want to also visually see the uploaded or camera photos on screen and run the face analysis for them
+get the selescted_subject_id from options 
+now, if session_state.attendance_images has images create a header "Added photos"
+loop through the images and show them on screen using st.image(img)
+
+now, create 3 buttons: clear all photo, run face analysis and record voice
+   for clear_photo button , assign the attendance_images = [] empty list and rerun
+   create a variable"has_photos": bool(st.session_state.attendance_images)
+   for run face analysis button :if subject_id not choosen warn, if not has_photos , warn the user_role
+   for both clear_photos and run_face_analysis we use the disabled option in st.button where disabled = not has_photos, which disable these buttons if no photo is present
+   if photos present run a st.spinner(analysis...)
+   initialize all_detected_id {}
+   loop over the images , convert img to rgb (we already converted images using Image (from pillow lib) while saving so dont need to repeat again)
+   using the predict_attendance(img_np) from face_pipeline.py get the detected 
+   if detected data is present loop over the student_id in the detected.keys()
+   get the student_id = int(sid) and append all id's in all_detected_id
+   outside the for loop : get the enrolled_students from the subject_students table in supabase
+   if no enrolled student, warn user, else, initialize results, and logged attendance
+   get the timestamp of attendance, loop over students in enrolled students , get the students and sources (from which photo you detected the student_id)
+   sources = all_detected_id.get(int(student['student_id']))
+   is_present = len(sources)> 0 (student present in one or more photo) then mark student present
+    append all resulta and logged_attendance
+    results=({name, ID, source, status}) 
+    logged_attendance =({student_id, subject_id, timestamp, is+present})
+    at the level of enrolled_students call the attendance_result_dialog(pd.DataFrame(results),logged_attendance)
+    takes in input dataframe to show in a table format when dialog opens after the analysis is run
+
+# The attendance_result_dialog(df, logged_attendance) function is imported from dialogue_attendance_result.py in src.components
+we use st.dataframe(df)
+create a discard button that simply reruns and dialog closes,
+create a confirm and save button that call the create_attendance(logged_attendance) function from src.database.db
+that saves it in supabase , toast and clear the attendace_images list and rerun
+
