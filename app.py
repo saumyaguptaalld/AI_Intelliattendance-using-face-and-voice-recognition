@@ -7,7 +7,7 @@ from src.screens.teacher_screen import teacher_screen
 from src.components.dialogue_quick_auto_enroll import quick_auto_enroll_dialog
 
 st.set_page_config(
-    page_title="Inteliatendance",
+    page_title="InteliAIattendance",
     page_icon="🙋🏻‍♀️",
     layout="centered"
 )

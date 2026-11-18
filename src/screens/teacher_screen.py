@@ -4,7 +4,7 @@ from src.database.config import supabase
 from src.components.footer import footer_dashboard
 from src.components.header import header_dashboard
 from src.ui.style_base_layout import style_base_layout, style_background_dashboard
-from src.database.db import create_teacher, check_teacher_exists, teacher_login, get_teacher_subjects
+from src.database.db import create_teacher, check_teacher_exists, teacher_login, get_teacher_subjects,get_attendance_for_teacher
 from src.components.dialogue_create_subject_teacher import create_subject_dialog
 from src.components.dialogue_create_share_subject_dialog import create_share_subject_dialog
 from src.components.subject_card import subject_card
@@ -14,6 +14,7 @@ from datetime import datetime
 import pandas as pd
 from src.components.dialogue_attendance_result import attendance_result_dialog
 from src.components.dialog_voice_attendance import voice_attendance_dialog
+
 # Teacher screen:  initial login and register session state 
 def teacher_screen():
     style_base_layout()
@@ -114,13 +115,14 @@ def teacher_tab_take_attendance():
         
     st.divider()
     opt1, opt2, opt3 = st.columns(3)
+    has_photos = bool(st.session_state.attendance_images)
     with opt1:
         if st.button("Clear All Photos",type="tertiary",width="stretch",icon=":material/delete:",disabled=not has_photos):
             st.session_state.attendance_images= []
             st.toast("Images cleared")
             st.rerun()
     with opt2:
-        has_photos = bool(st.session_state.attendance_images)
+        
         if st.button("Run Face Analysis",width="stretch",type="tertiary",icon=":material/person_search:",disabled=not has_photos):
             if selected_subject_id is None:
                 st.warning("Please select a subject first")
@@ -171,7 +173,7 @@ def teacher_tab_take_attendance():
            voice_attendance_dialog(selected_subject_id)
            # This function returns identified speakers
            # show the identified speakers here, with thier attendance table
-                    
+               
     footer_dashboard()
 def teacher_tab_Manage_Subjects():
     st.divider()
@@ -215,10 +217,37 @@ def teacher_tab_Manage_Subjects():
     
 def teacher_tab_Attendance_Records():
     st.header("Teacher Attendance Records")
-
-
-
-
+    teacher_id = st.session_state.teacher_data['teacher_id']
+    records = get_attendance_for_teacher(teacher_id)
+    if records is None:
+        return
+    # Showing data in pretty format
+    data  = []
+    for r in records:
+        time_stamp = r.get('timestamp')
+        data.append({
+            "ts_group":time_stamp.split(".")[0] if time_stamp else None,
+            "Time":datetime.fromisoformat(time_stamp).strftime("%Y-%m-%d %I:%M %p") if time_stamp else "N'A",
+            "Subject":r['subjects']['name'],
+            "Subject_code":r['subjects']['subject_code'],
+            "is_present":bool(r.get('is_present',False))
+        })
+    df = pd.DataFrame(data)
+    summary = (
+        df.groupby(['ts_group','Time','Subject','Subject_code'])
+                   .agg(
+                       Present_count = ('is_present',sum),  # counts the number of students present
+                       Total_count = ('is_present','count')) # counts the number of classes no matter if the student was absent or present , the class happened
+                    .reset_index()
+                )
+    summary['Attendance_stats'] = (
+        summary['Present_count'].astype(str) + "/" 
+        + summary['Total_count'].astype(str) +"   " +'Students'
+    )
+    display_df = (summary.sort_values(by='ts_group',ascending=False)
+                  [['Time','Subject','Subject_code','Attendance_stats']]
+                  )
+    st.dataframe(display_df,width="stretch",hide_index=True)
 # validate inputs 
 def login_teacher(username, password):
     if not username or not password:

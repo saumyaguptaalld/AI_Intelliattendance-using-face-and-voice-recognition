@@ -32,13 +32,24 @@ def identity_speaker(new_embedding, candidates_dict, threshold = 0.65):
         return None, 0.0  # default similarity score of 0 and None means no speaker was identified
     best_sid = None
     best_score = -1.0
-    if stored_embedding is not None and len(stored_embedding) > 0:  # embedding exists
+    new_embedding = np.asarray(new_embedding, dtype=np.float32)
+    # Normalize new embedding
+    new_norm = np.linalg.norm(new_embedding)
+    if new_norm == 0:
         return None, 0.0
+    new_embedding = new_embedding / new_norm
+   
     for sid, stored_embedding in candidates_dict.items():  # student id and student embedding obtained from candidates dict
         if stored_embedding is None or len(stored_embedding) == 0:
             continue
         stored_embedding = np.asarray(stored_embedding, dtype=np.float32)
-        similarity = np.dot(new_embedding, stored_embedding)  # get similarity score with new embedding and stored embedding using the dot product
+        if stored_embedding.shape != new_embedding.shape:
+            continue
+        stored_norm = np.linalg.norm(stored_embedding)
+        if stored_norm == 0:
+            continue
+        stored_embedding = stored_embedding / stored_norm
+        similarity = float(np.dot(new_embedding, stored_embedding))  # get similarity score with new embedding and stored embedding using the dot product
         if similarity > best_score:
             best_score = similarity
             best_sid = sid

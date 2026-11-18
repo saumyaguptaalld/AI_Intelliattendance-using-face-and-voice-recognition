@@ -13,7 +13,7 @@ def header_home():
                 style="height:100px;"
             />
             <h1 style="text-align:center;">
-                AI<br/>Intelliatendance
+                Inteli<br/>AIattendance
             </h1>
         </div>
     """, unsafe_allow_html=True
