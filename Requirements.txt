@@ -1,4 +1,5 @@
 # In terminal: pip install -r Requirements.txt
+streamlit
 # Utilities
 numpy 
 pandas
@@ -23,7 +24,7 @@ segno
 pillow
 
 # web interface
-streamlit
+
 st-copy
 #for voice pipeline
 librosa

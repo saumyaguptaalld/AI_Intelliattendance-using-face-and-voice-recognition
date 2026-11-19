@@ -13,7 +13,7 @@ def header_home():
                 style="height:100px;"
             />
             <h1 style="text-align:center;">
-                Inteli<br/>AIattendance
+                AI <br/>Inteliattendance
             </h1>
         </div>
     """, unsafe_allow_html=True
@@ -30,7 +30,7 @@ def header_dashboard():
             src="data:image/jpeg;base64,{image}"
             style="height:70px;"
         />
-        <h2 style="margin:0; text-align:left;font-family: 'Black ops one','sans-serif'; font-size:10px !important;  font-weight: bold; color:darkblue; ">AI<br/>Intelliatendance</h2>
+        <h2 style="margin:0; text-align:left;font-family: 'Black ops one','sans-serif'; font-size:10px !important;  font-weight: bold; color:darkblue; ">AI<br/>Inteliattendance</h2>
         </div>
     """, unsafe_allow_html=True
     )

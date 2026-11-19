@@ -5,7 +5,7 @@ from st_copy import copy_button
 # create a new subject dialog in streamlit
 @st.dialog("Share class link")
 def create_share_subject_dialog(sub_name, sub_code):
-    app_domain = "http://localhost:8501"
+    app_domain = "AI-Inteli-attendance-main.streamlit.app"
     join_url = f"{app_domain}/?join-code={sub_code}"
     st.header("Scan to Join!!")
     tab1, tab2 = st.columns([2,1],vertical_alignment="center")

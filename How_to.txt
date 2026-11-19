@@ -220,3 +220,29 @@ create a discard button that simply reruns and dialog closes,
 create a confirm and save button that call the create_attendance(logged_attendance) function from src.database.db
 that saves it in supabase , toast and clear the attendace_images list and rerun
 
+#creating the voice analysis button
+call the  voice_attendance_dialog(selected_subject_id) function from src.components.dialog_voice_attendance
+initialize audio_data = None, record student voice using st.audio_input, show audio recorded sucessfully
+put a run voice analysis button, with st.spinner, same as for photos we got the enrolled students from supabase get the enrolled students
+create a candidates_dict mapping studentid and their voice embedding for students who have their voice embedding 
+read the audio_bytes = audio_data.read(), detected_score = process_bulk_audio(audio_bytes, candidates_dict) will give detected scores of matching students
+get teh current_timestamp for attendance and loop over enrolled_students get the student_id, score, is_present and append them to results and logged attendance like in image we did
+here we have for results = {name, id, score, status}, logged_attendance={student_id, subject_id, time_stamp, is_present}
+save results(as pandas dataframe) and logged_attendance in st.session_state.voice_attendance_results
+if st.session_state.attendance_results exist show them in a dialog like we didi for images calling the attendance_result_dialog which is similar to here as show_voice_attendance
+
+# Now create the attendance records for the teacher screen
+get teacher_id from st.session_state.teacher_data 
+create get_attendance_for_teacher(teacher_id) in db
+     form supabase the table_attendance_logs , select all and the subjects table inner join for the selected_subject_id
+if records exist, means a teacher_id-->teacher's subject with students in them for that subject
+then arrange the records for pretty edit
+create an empty list data= []
+loop through records, get timestamp
+create data.append({time_stamp_group(groups all studnet attendance by ms to treat as 1 class),
+Time, subject, subject_code, is_present})
+# issue a class which is ms appart with other class can it be a problem?
+convert data to dataframe, craete summary where we groupby ([ts_group, Time, Subject, Subject_code]).agg(Present_count(is_present, sum), Total_count(is_present,count)).reset_index()
+summary['Attendance_stats']= shows the Present_count/Total_count eg., 2/4 student present
+display_dataframe = summary.sort_values(by=ts_group)of the variables [[Time, Subject, Subject_code, Attendance_stats]]
+st.dataframe(display_df) shows the table

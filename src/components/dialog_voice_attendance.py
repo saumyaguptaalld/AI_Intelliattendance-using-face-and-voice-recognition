@@ -42,7 +42,7 @@ def voice_attendance_dialog(selected_subject_id):
                     results.append({
                         "Name":student['full_name'],
                         "ID":student['student_id'],
-                        "Source":score if is_present else "-",
+                        "Score":score if is_present else "-",
                         "Status":"✅Present" if is_present else "❌Absent"
                     })
                     logged_attendance.append({

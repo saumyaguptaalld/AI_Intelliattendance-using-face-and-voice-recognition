@@ -24,12 +24,12 @@ def style_base_layout():
             @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap');
             @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Isometra&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap');
             
-            /* Hide top bar of streamlit 
+            /* Hide top bar of streamlit */
 
-            #MainMenu, footer, header{
+            MainMenu, footer, header{
                 visibility: hidden;
             } 
-            */
+            
             .block-container{
                 padding-top: 4.0rem !important
             }
