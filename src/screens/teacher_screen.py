@@ -174,7 +174,7 @@ def teacher_tab_take_attendance():
            # This function returns identified speakers
            # show the identified speakers here, with thier attendance table
                
-    footer_dashboard()
+   
 def teacher_tab_Manage_Subjects():
     st.divider()
     teacher_id = st.session_state.teacher_data["teacher_id"]
