@@ -3,3 +3,5 @@ AI_Inteliattendance is an AI-powered attendance management app built with Stream
 
 Landing Page deployed with vercel:
 https://intelli-ai-attendance-landing-page.vercel.app/
+Streamlit: 
+https://ai-inteli-attendance-main.streamlit.app/
